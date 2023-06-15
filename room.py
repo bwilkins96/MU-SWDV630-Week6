@@ -1,4 +1,3 @@
-from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from base import Base
 
@@ -9,11 +8,11 @@ class Room(Base):
         self._rate = float(rate)
         self._unavailable_dates = {}
 
-    __tablename__ = 'Rooms'
+    __tablename__ = 'room'
 
     _room_number: Mapped[int] = mapped_column(primary_key=True)
-    _type: Mapped[str] = mapped_column(String(50))
-    _rate: Mapped[float] = mapped_column()
+    _type: Mapped[str]
+    _rate: Mapped[float]
     #_unavailable_dates: Mapped[dict] = relationship()
 
     def get_room_number(self):

@@ -3,26 +3,40 @@ from sqlalchemy.orm import Session
 
 from base import Base
 from room import Room
+from person import Guest, Employee, Manager
 
 def main():
+    # Creates a database in the directory called 'test.db'
     #engine = create_engine("sqlite+pysqlite:///test.db", echo=False)
+    
+    # Creates a transient in-memory database
     engine = create_engine("sqlite+pysqlite:///:memory:", echo=False)
+    
     Base.metadata.create_all(engine)
 
-    rooms = []
-    for i in range(1, 6):
-        rooms.append(Room(i, 'queen', 150))
+    room = Room(152, 'queen', 100)
+    guest = Guest(room, 'Joe')
+    employee = Employee(20, 'Jeff')
+    
+    manager = Manager('B10', 30, 'Jenny')
+    manager.add_employee(employee)
 
+    data = [room, guest, employee, manager]
+    classes = [Room, Guest, Employee, Manager]
+
+    print()
     with Session(engine) as session:
-        for room in rooms:
-            session.add(room)
+        for obj in data:
+            session.add(obj)
         session.commit()
 
-        stmt = select(Room)
-        result = session.scalars(stmt)
-        
-        for room in result.all():
-            print(room)
-
+        for cls in classes:
+            print(cls)
+            stmt = select(cls)
+            result = session.scalars(stmt)
+            
+            for inst in result.all():
+                print(inst)
+            print()
 
 if __name__ == '__main__': main()
