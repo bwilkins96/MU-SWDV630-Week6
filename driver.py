@@ -1,39 +1,28 @@
 from sqlalchemy import create_engine, select
-
-from sqlalchemy import String, Integer, ForeignKey, Column
-from sqlalchemy.orm import DeclarativeBase, mapped_column, relationship
 from sqlalchemy.orm import Session
 
-
-class Base(DeclarativeBase):
-    pass
-
-class Test(Base):
-    def __init__(self, name):
-        self.name = name
-
-    __tablename__ = 'test_table'
-
-    id = mapped_column(Integer(), primary_key=True)
-    name = mapped_column(String(50))
+from base import Base
+from room import Room
 
 def main():
-    #engine = create_engine("sqlite+pysqlite:///:memory:", echo=True)
-
-    engine = create_engine("sqlite+pysqlite:///test.db", echo=False)
+    #engine = create_engine("sqlite+pysqlite:///test.db", echo=False)
+    engine = create_engine("sqlite+pysqlite:///:memory:", echo=False)
     Base.metadata.create_all(engine)
 
-    test = Test('This is not final, this is just a test!')
+    rooms = []
+    for i in range(1, 6):
+        rooms.append(Room(i, 'queen', 150))
 
     with Session(engine) as session:
-        session.add(test)
+        for room in rooms:
+            session.add(room)
         session.commit()
 
-        stmt = select(Test).where(Test.name == 'This is not final, this is just a test!')
+        stmt = select(Room)
         result = session.scalars(stmt)
         
-        for t in result.all():
-            print(t)
+        for room in result.all():
+            print(room)
 
 
 if __name__ == '__main__': main()
