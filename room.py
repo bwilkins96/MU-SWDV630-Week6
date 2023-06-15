@@ -1,7 +1,11 @@
+# SWDV 630 - Object-Oriented Software Architecture
+# Room class
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from base import Base
+from prototype import Prototype
 
-class Room(Base):
+class Room(Base, Prototype):
     def __init__(self, room_num, type, rate):
         self._room_number = int(room_num)
         self._type = type
