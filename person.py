@@ -6,6 +6,7 @@ from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from base import Base
 from stay import Stay
+from account import Account
 
 class Person(Base):
     """Person base class for a hotel management system"""
@@ -69,10 +70,13 @@ class Guest(Person):
     def __init__(self, stay, *args, **kwargs):
         """Sets up a Guest instance with a stay parameter"""
         self._stay = stay
+        self._account = Account()
         super().__init__(*args, **kwargs)
 
     _stay_id: Mapped[int] = mapped_column(ForeignKey('stay._id'), nullable=True)
+    _account_id: Mapped[int] = mapped_column(ForeignKey('account._id'), nullable=True)
     _stay: Mapped[Stay] = relationship()
+    _account: Mapped[Account] = relationship(cascade='all, delete')
 
     __mapper_args__ = {
         "polymorphic_identity": "guest",
@@ -83,6 +87,9 @@ class Guest(Person):
     
     def set_stay(self, stay):
         self._stay = stay
+
+    def get_account(self):
+        return self._account
     
     def is_checked_in(self):
         if self._stay:

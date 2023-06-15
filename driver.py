@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from base import Base
 from room import Room
 from stay import Stay
+from account import Account
 from person import Guest, Employee, Manager
 
 def main():
@@ -25,7 +26,7 @@ def main():
     manager.add_employee(employee)
 
     data = [room, stay, guest, employee, manager]
-    classes = [Room, Stay, Guest, Employee, Manager]
+    classes = [Room, Stay, Guest, Employee, Manager, Account]
 
     print()
     with Session(engine) as session:

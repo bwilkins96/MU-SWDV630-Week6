@@ -13,7 +13,7 @@ class Room(Base):
     _room_number: Mapped[int] = mapped_column(primary_key=True)
     _type: Mapped[str]
     _rate: Mapped[float]
-    #_unavailable_dates: Mapped[dict] = relationship()
+    #_unavailable_dates: Mapped[dict]
 
     def get_room_number(self):
         return self._room_number
