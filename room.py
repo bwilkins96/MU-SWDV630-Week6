@@ -28,4 +28,4 @@ class Room(Base):
         return self._rate * num_days
     
     def __repr__(self):
-        return '{' + f'Room {self._room_number}: ${self._rate:.2f}' + '}'
+        return f'<Room {self._room_number}: ${self._rate:.2f}>'

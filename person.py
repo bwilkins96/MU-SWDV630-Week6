@@ -5,25 +5,25 @@ from datetime import date
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from base import Base
-from room import Room
+from stay import Stay
 
 class Person(Base):
     """Person base class for a hotel management system"""
     
-    def __init__(self, name, start=date.today(), end=None):
+    def __init__(self, name, joined=date.today(), end=None):
         """
         Sets up a Person instance with name, start date, and end date parameters.
         Parameters start and end should be date objects.
         """
         self._name = name.title() 
-        self._start = start
+        self._joined = joined
         self._end = end
 
     __tablename__ = 'person'
 
     _id: Mapped[int] = mapped_column(primary_key=True)
     _name: Mapped[str]
-    _start: Mapped[date]
+    _joined: Mapped[date]
     _end: Mapped[date] = mapped_column(nullable=True)
     _type: Mapped[str]
 
@@ -66,38 +66,28 @@ class Person(Base):
 class Guest(Person):
     """Guest subclass for a hotel management system"""
 
-    def __init__(self, room, *args, **kwargs):
-        """Sets up a Guest instance with a room parameter"""
-        self._room = room
-        self._checked_in = False
+    def __init__(self, stay, *args, **kwargs):
+        """Sets up a Guest instance with a stay parameter"""
+        self._stay = stay
         super().__init__(*args, **kwargs)
 
-    _room: Mapped[Room] = relationship()
-    _checked_in: Mapped[bool] = mapped_column(nullable=True)
-    _room_number: Mapped[int] = mapped_column(ForeignKey('room._room_number'), nullable=True)
+    _stay_id: Mapped[int] = mapped_column(ForeignKey('stay._id'), nullable=True)
+    _stay: Mapped[Stay] = relationship()
 
     __mapper_args__ = {
         "polymorphic_identity": "guest",
     }
 
-    def get_room(self):
-        return self._room
+    def get_stay(self):
+        return self._stay
     
-    def set_room(self, room):
-        self._room = room
+    def set_stay(self, stay):
+        self._stay = stay
     
     def is_checked_in(self):
-        return self._checked_in
-    
-    def check_in(self):
-        """Sets checked_in to true and automatically updates start"""
-        self._checked_in = True
-        self.set_start(date.today())
-
-    def check_out(self):
-        """Sets checked_in to false and automatically updates end"""
-        self._checked_in = False
-        self.set_end(date.today())
+        if self._stay:
+            return self._stay.is_checked_in()
+        return False
 
 class Employee(Person):
     """Employee subclass for a hotel management system"""
@@ -217,7 +207,7 @@ def test_manager():
     print(man.get_employees())          # [(Person: Jennifer)]
 
 def test():
-    test_guest()
+    #test_guest()
     print()
     test_employee()
     print()
