@@ -33,10 +33,13 @@ def main():
 
     print()
     with Session(engine) as session:
+
+        # Add objects to database
         for obj in data:
             session.add(obj)
         session.commit()
 
+        # Retrieve objects from database
         for cls in classes:
             print(cls)
             stmt = select(cls)

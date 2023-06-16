@@ -1,7 +1,7 @@
 # SWDV 630 - Object-Oriented Software Architecture
 # Account class
 
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from base import Base
 
 class Account(Base):
