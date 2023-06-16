@@ -28,6 +28,7 @@ class Person(Base):
     _end: Mapped[date] = mapped_column(nullable=True)
     _type: Mapped[str]
 
+    # Used to set up a table that keeps track of all instances of the base and subclasses 
     __mapper_args__ = {
         "polymorphic_on": "_type",
         "polymorphic_identity": "person",
@@ -39,11 +40,11 @@ class Person(Base):
     def set_name(self, name):
         self._name = name.title() 
         
-    def get_start(self):
-        return self._start
+    def get_joined(self):
+        return self._joined
     
-    def set_start(self, start):
-        self._start = start
+    def set_joined(self, joined):
+        self._joined = joined
 
     def get_end(self):
         return self._end
@@ -178,17 +179,20 @@ class Manager(Employee):
 
 # Test functions
 def test_guest():
-    guest = Guest(150, 'Joe', date(2023, 5, 20), date(2023, 6, 1))
-    print(guest.is_checked_in(), guest.get_start())     # False, 2023-05-20
+    from stay import Stay
 
-    guest.check_in()
-    print(guest.is_checked_in(), guest.get_start())     # True, Today's date in yyyy-mm-dd
+    stay = Stay('room 101', date.today(), date.today())
+    guest = Guest(stay, 'Joe', date(2023, 5, 20))
+    print(guest.is_checked_in(), guest.get_joined())     # False, 2023-05-20
 
-    guest.check_out()
-    print(guest.is_checked_in(), guest.get_end())       # False, Today's date in yyyy-mm-dd
+    guest.get_stay().check_in()
+    print(guest.is_checked_in())        # True
+
+    guest.get_stay().check_out()
+    print(guest.is_checked_in())        # False
 
 def test_employee():
-    emp = Employee(20, 'Jeff', date.today(), None)
+    emp = Employee(20, 'Jeff')
     emp.add_hours(40)
     print(emp.get_total_pay())          # 800.0
 
@@ -201,11 +205,11 @@ def test_employee():
     print(emp.is_current())             # True
 
 def test_manager():
-    man = Manager('B10', 30, 'Jenny', date.today(), None)
+    man = Manager('B10', 30, 'Jenny')
     print(man.get_employees())          # []
 
-    emp_a = Employee(20, 'Julian', date.today(), None)
-    emp_b = Employee(20, 'Jennifer', date.today(), None)
+    emp_a = Employee(20, 'Julian')
+    emp_b = Employee(20, 'Jennifer')
     man.add_employee(emp_a)
     man.add_employee(emp_b)
     print(man.get_employees())          # [(Person: Julian), (Person: Jennifer)]
@@ -214,7 +218,7 @@ def test_manager():
     print(man.get_employees())          # [(Person: Jennifer)]
 
 def test():
-    #test_guest()
+    test_guest()
     print()
     test_employee()
     print()
