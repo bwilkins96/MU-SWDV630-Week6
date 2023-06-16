@@ -1,5 +1,5 @@
 # SWDV 630 - Object-Oriented Software Architecture
-# Account class
+# Account class for use with Guest class in person.py
 
 from sqlalchemy.orm import Mapped, mapped_column
 from base import Base
