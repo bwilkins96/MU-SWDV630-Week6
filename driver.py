@@ -21,7 +21,7 @@ def main():
     Base.metadata.create_all(engine)
 
     room = Room(152, 'queen', 100)
-    stay = Stay(room, date.today(), date.today())
+    stay = Stay(room, date(2023, 8, 1), date(2023, 8, 5))
 
     guest = Guest(stay, 'Joe')
     employee = Employee(20, 'Jeff')
